@@ -1,7 +1,7 @@
 import { Firestore } from "@google-cloud/firestore";
 
 const db = new Firestore({
-    keyFilename: "./gcp-web-server-key.json",
+    keyFilename: "./secret/gcp-web-server-key.json",
 })
 
 export const log = async () => {
