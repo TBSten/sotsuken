@@ -11,7 +11,7 @@ import { trpc } from '@/trpc';
 import { useSavable } from '@/util/hooks/useSavable';
 import { useSnackbar } from '@/util/hooks/useSnackbar';
 import { Add, Save } from '@mui/icons-material';
-import { Box, Button, Fab, Snackbar, Stack } from '@mui/material';
+import { Box, Button, Fab, Snackbar, Stack, Tooltip } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
 import { getServerSession } from 'next-auth';
 import { FC, memo, useCallback } from 'react';
@@ -216,9 +216,11 @@ const FixedActions: FC<FixedActionsProps> = ({
 }) => {
     return (
         <Box position="fixed" right={12} bottom={12} onClick={onSave}>
-            <Fab color="primary" size='large'>
-                <Save />
-            </Fab>
+            <Tooltip title="保存">
+                <Fab color="primary" size='large'>
+                    <Save />
+                </Fab>
+            </Tooltip>
         </Box>
     );
 }

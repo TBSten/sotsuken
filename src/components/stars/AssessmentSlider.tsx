@@ -23,6 +23,7 @@ interface AssessmentSliderProps {
 }
 const AssessmentSlider: FC<AssessmentSliderProps> = ({ assessment, onChange }) => {
     const { responsive } = useResponsive()
+    const assessmentLabel = getAssessmentLabel(assessment)
     return (
         <Stack>
             <Slider
@@ -32,10 +33,12 @@ const AssessmentSlider: FC<AssessmentSliderProps> = ({ assessment, onChange }) =
                     markLabel: { style: { fontSize: "0.25rem" } },
                 }}
                 value={assessment}
-                onChange={(e, assessment) => onChange(assessment as number)}
+                onChange={(_, assessment) => onChange(assessment as number)}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(a) => assessmentLabel}
             />
             <Center>
-                {assessmentMarks[assessmentMarks.findIndex(p => p.value === assessment)].label}
+                {assessmentLabel}
             </Center>
         </Stack>
     );

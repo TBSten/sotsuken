@@ -3,7 +3,7 @@ import { useMenu } from "@/util/hooks/useMenu"
 import { useOpen } from "@/util/hooks/useOpen"
 import { summaryString } from "@/util/summaryString"
 import { ArrowDownward, ArrowUpward, Delete, ExpandMore, MoreVert } from "@mui/icons-material"
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Fade, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, TextField, useTheme } from "@mui/material"
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Fade, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, TextField, Tooltip, useTheme } from "@mui/material"
 import { FC, memo } from "react"
 import AssessmentSlider, { getAssessmentLabel } from "./AssessmentSlider"
 import InterestSwitch from "./InterestSwitch"
@@ -136,12 +136,16 @@ const Actions: FC<ActionsProps> = ({
         <AccordionActions>
             <Stack direction="row" justifyContent="space-between" width="100%">
                 <Box>
-                    <IconButton onClick={onMoveUp} disabled={isFirst}>
-                        <ArrowUpward />
-                    </IconButton>
-                    <IconButton onClick={onMoveDown} disabled={isLast}>
-                        <ArrowDownward />
-                    </IconButton>
+                    <Tooltip title="上へ移動">
+                        <IconButton onClick={onMoveUp} disabled={isFirst}>
+                            <ArrowUpward />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="下へ移動">
+                        <IconButton onClick={onMoveDown} disabled={isLast}>
+                            <ArrowDownward />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
                 <IconButton onClick={menu.show} ref={menu.btnRef}>
                     <MoreVert />
