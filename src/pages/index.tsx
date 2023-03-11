@@ -1,9 +1,11 @@
 import Center from '@/components/Center';
-import H2 from '@/components/H2';
 import SquareButton from '@/components/SquareButton';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
-import { ReversedSotsukenThemeProvider, SotsukenThemeProvider } from '@/styles/theme';
+import H2 from '@/components/section/H2';
+import Section from '@/components/section/Section';
+import SectionContent from '@/components/section/SectionContent';
+import { PrimaryThemeProvider, SecondaryThemeProvider } from '@/styles/theme';
 import { Box, Button, CircularProgress, Grid, Stack } from '@mui/material';
 import { NextPage } from 'next';
 import { Session } from 'next-auth';
@@ -30,7 +32,7 @@ const Top: NextPage<Props> = ({ }) => {
     <BaseLayout containView>
       <LayoutContent fill>
         <Grid container spacing={2} width="100%" height="100%">
-          <Grid item xs={12} md="auto" height="100%" overflow="auto">
+          <Grid item xs={12} md="auto" height={{ xs: "fit-content", md: "100%" }} overflow="auto">
             <Center py={2}>
               <UserSummary user={data.user} />
               {/* TODO show point */}
@@ -88,21 +90,23 @@ interface StarsMenusProps {
 }
 const StarsMenus: FC<StarsMenusProps> = () => {
   return (
-    <SotsukenThemeProvider>
-      <Box pb={4}>
+    <PrimaryThemeProvider>
+      <Section>
         <H2>
           星取表
         </H2>
-        <Stack p={2} direction="row" width="100%" overflow="auto" columnGap={2}>
-          <SquareButton href="/stars/edit">
-            星取表の<br />編集
-          </SquareButton>
-          <SquareButton href="/stars/">
-            星取表の<br />検索
-          </SquareButton>
-        </Stack>
-      </Box>
-    </SotsukenThemeProvider>
+        <SectionContent>
+          <Stack direction="row" width="100%" overflow="auto" columnGap={2}>
+            <SquareButton href="/stars/edit">
+              星取表の<br />編集
+            </SquareButton>
+            <SquareButton href="/stars/">
+              星取表の<br />検索
+            </SquareButton>
+          </Stack>
+        </SectionContent>
+      </Section>
+    </PrimaryThemeProvider>
   );
 }
 
@@ -110,23 +114,25 @@ interface PointMenusProps {
 }
 const PointMenus: FC<PointMenusProps> = () => {
   return (
-    <ReversedSotsukenThemeProvider>
-      <Box pb={4}>
+    <SecondaryThemeProvider>
+      <Section>
         <H2>
           ポイント
         </H2>
-        <Stack p={2} direction="row" width="100%" overflow="auto" columnGap={2}>
-          <SquareButton href="/point/new">
-            ポイント<br />
-            申請
-          </SquareButton>
-          <SquareButton href="/point/edit">
-            ポイント<br />
-            履歴
-          </SquareButton>
-        </Stack>
-      </Box>
-    </ReversedSotsukenThemeProvider>
+        <SectionContent>
+          <Stack direction="row" width="100%" overflow="auto" columnGap={2}>
+            <SquareButton href="/point/new">
+              ポイント<br />
+              申請
+            </SquareButton>
+            <SquareButton href="/point/edit">
+              ポイント<br />
+              履歴
+            </SquareButton>
+          </Stack>
+        </SectionContent>
+      </Section>
+    </SecondaryThemeProvider>
   );
 }
 

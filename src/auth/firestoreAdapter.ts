@@ -1,5 +1,7 @@
 import { Firestore, Timestamp } from "@google-cloud/firestore"
 import { Adapter, AdapterAccount, AdapterSession, AdapterUser, VerificationToken } from "next-auth/adapters"
+import { v4 as uuidv4 } from "uuid"
+import { initForSignUpUser } from "./users"
 
 
 // for consistency, store all fields as snake_case in the database
@@ -28,7 +30,6 @@ export function mapFieldsFactory(preferSnakeCase?: boolean) {
     return { toDb: identity, fromDb: identity }
 }
 
-/** @internal */
 function getConverter<Document extends Record<string, any>>(options: {
     excludeId?: boolean
     preferSnakeCase?: boolean
@@ -40,7 +41,7 @@ function getConverter<Document extends Record<string, any>>(options: {
             const document: Record<string, unknown> = {}
 
             for (const key in object) {
-                if (key === "id") continue
+                // if (key === "id") continue
                 const value = object[key]
                 if (value !== undefined) {
                     document[mapper.toDb(key)] = value
@@ -126,13 +127,19 @@ function collestionsFactory(
 }
 
 const FirestoreAdapter = (db: Firestore): Adapter => {
-    const C = collestionsFactory(db, true)
-    const mapper = mapFieldsFactory(true)
+    const C = collestionsFactory(db, false)
+    const mapper = mapFieldsFactory(false)
     return ({
         async createUser(userInit) {
-            const { id: userId } = await C.users.add(userInit as AdapterUser)
+            const userId = uuidv4()
+            let user: AdapterUser = {
+                ...userInit,
+                id: userId,
+            }
+            user = await initForSignUpUser(user)
+            await C.users.doc(userId).set(user)
 
-            const user = await getDoc(C.users.doc(userId))
+            // const user = await getDoc(C.users.doc(userId))
             if (!user) throw new Error("[createUser] Failed to fetch created user")
 
             return user

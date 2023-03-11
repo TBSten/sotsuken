@@ -2,47 +2,48 @@ import { ThemeOptions, ThemeProvider, createTheme } from "@mui/material";
 import { FC, ReactNode } from "react";
 
 const defaultTheme = createTheme({})
-export const theme = createTheme(defaultTheme, {
+export const primaryTheme = createTheme(defaultTheme, {
     palette: {
         primary: {
-            dark: "#7137EE",
-            main: "#875BE7",
-            light: "#9671e6",
+            dark: "#7137EEf0",
+            main: "#875BE7f0",
+            light: "#9671e6f0",
         },
         secondary: {
-            dark: "#2E7849",
-            main: "#62A87C",
-            light: "#a7dab9",
+            dark: "#2E7849f0",
+            main: "#62A87Cf0",
+            light: "#a7dab9f0",
         },
+        background: {
+            paper: "#f4f0f6f0",
+        }
     },
-    shadows: [
-        "none", "none", "none", "none", "none", "none", "none", "none", "none", "none",
-        "none", "none", "none", "none", "none", "none", "none", "none", "none", "none",
-        "none", "none", "none", "none", "none",
-    ],
+    shape: {
+        borderRadius: 16,
+    },
 } as ThemeOptions)
 
-export const reversedTheme = createTheme(theme, {
+export const secondaryTheme = createTheme(primaryTheme, {
     palette: {
-        primary: theme.palette.secondary,
-        secondary: theme.palette.primary,
+        primary: primaryTheme.palette.secondary,
+        secondary: primaryTheme.palette.primary,
     },
 } as ThemeOptions)
 
 interface SotsukenThemeProviderProps {
     children: ReactNode
 }
-export const SotsukenThemeProvider: FC<SotsukenThemeProviderProps> = ({ children }) => {
+export const PrimaryThemeProvider: FC<SotsukenThemeProviderProps> = ({ children }) => {
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={primaryTheme}>
             {children}
         </ThemeProvider>
     );
 }
 
-export const ReversedSotsukenThemeProvider: FC<SotsukenThemeProviderProps> = ({ children }) => {
+export const SecondaryThemeProvider: FC<SotsukenThemeProviderProps> = ({ children }) => {
     return (
-        <ThemeProvider theme={reversedTheme}>
+        <ThemeProvider theme={secondaryTheme}>
             {children}
         </ThemeProvider>
     );

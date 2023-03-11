@@ -4,7 +4,6 @@ import { NextAuthOptions } from "next-auth"
 import NextAuth from "next-auth/next"
 import GoogleProvider from "next-auth/providers/google"
 
-
 export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
@@ -20,5 +19,12 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     adapter: FirestoreAdapter(db),
+    callbacks: {
+        async session({ session, user }) {
+            session.user.userId = user.id
+            return session
+        },
+
+    },
 }
 export default NextAuth(authOptions)

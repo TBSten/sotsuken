@@ -1,6 +1,7 @@
 import EmotionCacheProvider from '@/components/EmotionCacheProvider';
 import '@/styles/globals.css';
-import { SotsukenThemeProvider } from '@/styles/theme';
+import { PrimaryThemeProvider } from '@/styles/theme';
+import { trpc } from '@/trpc';
 import { EmotionCache } from '@emotion/cache';
 import { CssBaseline } from '@mui/material';
 import { Session } from 'next-auth';
@@ -11,15 +12,17 @@ interface SotsukenAppProps extends AppProps {
   emotionCache?: EmotionCache;
   session?: Session | null
 }
-export default function App({ Component, emotionCache, session, ...pageProps }: SotsukenAppProps) {
+function App({ Component, emotionCache, session, pageProps }: SotsukenAppProps) {
   return (
     <SessionProvider session={session}>
       <CssBaseline />
-      <SotsukenThemeProvider>
+      <PrimaryThemeProvider>
         <EmotionCacheProvider emotionCache={emotionCache}>
           <Component {...pageProps} />
         </EmotionCacheProvider>
-      </SotsukenThemeProvider>
+      </PrimaryThemeProvider>
     </SessionProvider>
   )
 }
+
+export default trpc.withTRPC(App)
