@@ -561,11 +561,6 @@
   resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-10.15.0.tgz#1c46be0aaf0f69a31ae3c328c2fc51dbca042847"
   integrity sha512-MD8JBoviAioI3ssOzN+Uxd8uGvhgfqvtbmkdhYQkQJOBlQw+4A55BfeXykeRmIHOs6X83iiqZVVerximEzTADQ==
 
-"@trpc/react@^10.0.0-proxy-beta.20":
-  version "10.0.0-proxy-beta.20"
-  resolved "https://registry.yarnpkg.com/@trpc/react/-/react-10.0.0-proxy-beta.20.tgz#985422b5a5b5ad2c280fa23ccb1714379f29538c"
-  integrity sha512-axuy3Nf71j6vVQFhc7ATSOW4gMTL92RSMTA0p93dNoNQpKqADGjjB1bFUqAmCeAjy441s+h9tqhj3g14sQ/NmA==
-
 "@trpc/server@^10.15.0":
   version "10.15.0"
   resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.15.0.tgz#3f7f812d90efb9fc157fdb050595ad463ccb4764"

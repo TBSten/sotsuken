@@ -1,10 +1,9 @@
 import { db } from "@/gcp/firestore";
-import { StarsSchema } from "@/pages/stars/types";
-import { initStars } from "@/stars";
+import { initSkillAssessment } from "@/skillAssessment";
 import { FirestoreDataConverter } from "@google-cloud/firestore";
 import { User } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
-import { z } from "zod";
+import { UserSchema } from "./types";
 
 const userConverter: FirestoreDataConverter<User> = {
     fromFirestore(userSnapshot) {
@@ -17,16 +16,8 @@ const userConverter: FirestoreDataConverter<User> = {
 export const users = db.collection("users")
     .withConverter(userConverter)
 
-const UserSchema = z.object({
-    id: z.string(),
-    name: z.string().nullish(),
-    email: z.string().nullish(),
-    image: z.string().nullish(),
-    stars: StarsSchema.array(),
-})
-
 export const initForSignUpUser = async (user: AdapterUser): Promise<AdapterUser> => {
-    let newUser = await initStars(user)
+    let newUser = await initSkillAssessment(user)
     return newUser
 }
 
@@ -34,6 +25,11 @@ export const getUser = async (userId: string) => {
     const snap = await users.doc(userId).get()
     const userData = snap.data()
     return userData ?? null
+}
+
+export const getAllUsers = async () => {
+    const snap = await users.get()
+    return snap.docs.map(doc => doc.data())
 }
 
 export const updateUser = async (userId: string, input: Partial<User>) => {

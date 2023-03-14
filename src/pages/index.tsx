@@ -80,15 +80,15 @@ interface MainMenusProps {
 const MainMenus: FC<MainMenusProps> = () => {
   return (
     <Box>
-      <StarsMenus />
+      <SkillAssessmentMenus />
       <PointMenus />
     </Box>
   );
 }
 
-interface StarsMenusProps {
+interface SkillAssessmentMenusProps {
 }
-const StarsMenus: FC<StarsMenusProps> = () => {
+const SkillAssessmentMenus: FC<SkillAssessmentMenusProps> = () => {
   return (
     <PrimaryThemeProvider>
       <Section>
@@ -97,10 +97,10 @@ const StarsMenus: FC<StarsMenusProps> = () => {
         </H2>
         <SectionContent>
           <Stack direction="row" width="100%" overflow="auto" columnGap={2}>
-            <SquareButton href="/stars/edit">
+            <SquareButton href="/skillAssessment/edit">
               星取表の<br />編集
             </SquareButton>
-            <SquareButton href="/stars/">
+            <SquareButton href="/skillAssessment/">
               星取表の<br />検索
             </SquareButton>
           </Stack>
