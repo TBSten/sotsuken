@@ -101,7 +101,7 @@ const SkillAssessmentMenus: FC<SkillAssessmentMenusProps> = () => {
               星取表の<br />編集
             </SquareButton>
             <SquareButton href="/skillAssessment/">
-              星取表の<br />検索
+              星取表の<br />一覧
             </SquareButton>
           </Stack>
         </SectionContent>
@@ -125,7 +125,7 @@ const PointMenus: FC<PointMenusProps> = () => {
               ポイント<br />
               申請
             </SquareButton>
-            <SquareButton href="/point/edit">
+            <SquareButton href="/point/">
               ポイント<br />
               履歴
             </SquareButton>

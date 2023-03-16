@@ -1,4 +1,7 @@
 import { getUser } from "@/auth/users";
+import { addPoint } from "@/point";
+import { addPointComment } from "@/point/comments";
+import { PointCommentSchema, PointSchema } from "@/point/type";
 import { addSkillAssessment, deleteSkillAssessment, getAllSkillAssessment, updateSkillAssessment } from "@/skillAssessment";
 import { SkillAssessment, SkillAssessmentTemplate, SkillAssessmentTemplateSchema } from "@/skillAssessment/types";
 import { TRPCError, initTRPC } from "@trpc/server";
@@ -78,6 +81,31 @@ export const appRouter = t.router({
                 const user = await getUser(userId)
                 return user
             }),
+    }),
+    point: t.router({
+        add: t.procedure
+            .input(PointSchema.partial())
+            .mutation(async ({ input, ctx: { session } }) => {
+                const userId = session?.user.userId
+                // TODO 申請時は条件が揃ってないと追加できない
+                if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                const newPoint = await addPoint(userId, input)
+                return newPoint
+            }),
+        comment: t.router({
+            add: t.procedure
+                .input(z.object({
+                    pointOwnerId: z.string(),
+                    pointId: z.string(),
+                    comment: PointCommentSchema.partial(),
+                }))
+                .mutation(async ({ input: { pointOwnerId, pointId, comment }, ctx: { session } }) => {
+                    const authorId = session?.user.userId
+                    if (!authorId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                    const newComment = await addPointComment(pointOwnerId, pointId, authorId, comment)
+                    return newComment
+                })
+        }),
     }),
 })
 export const hoge = "this is very important value"
