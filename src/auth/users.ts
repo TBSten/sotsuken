@@ -27,6 +27,11 @@ export const getUser = async (userId: string) => {
     return userData ?? null
 }
 
+export const getUsersByName = async (name: string) => {
+    const snap = await users.where("name", "==", name).get()
+    return snap.docs.map(d => d.data())
+}
+
 export const getAllUsers = async () => {
     const snap = await users.get()
     return snap.docs.map(doc => doc.data())

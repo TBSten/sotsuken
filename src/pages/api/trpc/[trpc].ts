@@ -1,4 +1,5 @@
-import { addSkillAssessment, deleteSkillAssessment, updateSkillAssessment } from "@/skillAssessment";
+import { getUser } from "@/auth/users";
+import { addSkillAssessment, deleteSkillAssessment, getAllSkillAssessment, updateSkillAssessment } from "@/skillAssessment";
 import { SkillAssessment, SkillAssessmentTemplate, SkillAssessmentTemplateSchema } from "@/skillAssessment/types";
 import { TRPCError, initTRPC } from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
@@ -58,14 +59,24 @@ export const appRouter = t.router({
             .mutation(async ({ input: assessmentId, ctx }) => {
                 await deleteSkillAssessment(assessmentId)
             }),
-        search: t.procedure
-            .input(z.union([
-                z.string().array(),
-                z.string()
-                    .transform(str => str.split(/\s+/).filter(s => !!s)),
-            ]))
-            .query(async ({ input }) => {
-                throw new Error("not implement")
+        getAll: t.procedure
+            .query(async ({ }) => {
+                const results = await getAllSkillAssessment()
+                return results
+            }),
+        // search: t.procedure
+        //     .input(SkillAssessmentSearchInputSchema)
+        //     .query(async ({ input }) => {
+        //         const results = await searchSkillAssessment(input)
+        //         return results
+        //     }),
+    }),
+    user: t.router({
+        get: t.procedure
+            .input(z.string())
+            .query(async ({ input: userId }) => {
+                const user = await getUser(userId)
+                return user
             }),
     }),
 })

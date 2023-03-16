@@ -1,3 +1,4 @@
+import { UserSchema } from "@/auth/types";
 import { z } from "zod";
 
 export const SkillAssessmentSchema = z.object({
@@ -20,8 +21,20 @@ export const SkillAssessmentTemplateSchema = SkillAssessmentSchema.pick({
 })
 export type SkillAssessmentTemplate = z.infer<typeof SkillAssessmentTemplateSchema>
 
-export const SkillAssessmentSearchResultRecordSchema = z.object({
-    userId: z.string(),
-    starsNo: z.number(),
+export const SkillAssessmentSearchInputSchema = z.object({
+    user: z.string().nullable().transform(str => str?.match(/^\s*$/g) ? null : str), // id or name
+    skill: z.string().nullable().transform(str => str?.match(/^\s*$/g) ? null : str), // skill name
+    forceRefresh: z.boolean(),
 })
-export type SkillAssessmentSearchResultRecord = z.infer<typeof SkillAssessmentSearchResultRecordSchema>
+export type SkillAssessmentSearchInput = z.infer<typeof SkillAssessmentSearchInputSchema>
+
+export const SkillAssessmentSearchResultSchema = z.object({
+    assessments: SkillAssessmentSchema.array(),
+    users: z.record(UserSchema),
+})
+export type SkillAssessmentSearchResult = z.infer<typeof SkillAssessmentSearchResultSchema>
+
+export const SkillSchema = z.object({
+    skill: z.string(),
+})
+export type Skill = z.infer<typeof SkillSchema>

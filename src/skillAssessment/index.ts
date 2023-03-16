@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import { skillAssessmentConverter } from "./converter";
 import { getAllSkillAssessmentTemplateMulti } from "./template";
 
-export const skillAssessments = db.collection("skillAssessments").withConverter(skillAssessmentConverter)
+export const skillAssessments = db.collection("skillAssessments")
+    .withConverter(skillAssessmentConverter)
 
 export const initSkillAssessment = async (user: AdapterUser): Promise<AdapterUser> => {
     // デフォルトのスキルを取得
@@ -43,8 +44,15 @@ export const getSkillAssessmentByAssessmentId = async (assessmentId: string) => 
     return snap.data()
 }
 
+export const getSkillAssessmentsBySkill = async (skill: string) => {
+    const snap = await skillAssessments.where("skill", "==", skill).get()
+    return snap.docs.map(d => d.data())
+}
+
 export const getAllSkillAssessment = async (): Promise<SkillAssessment[]> => {
-    const snap = await skillAssessments.get()
+    const snap = await skillAssessments
+        .orderBy("skill", "asc")
+        .get()
     const assessments = snap.docs.map(d => d.data())
     return assessments
 }
