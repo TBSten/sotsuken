@@ -35,7 +35,7 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
         //     pointId: newPoint.pointId,
         //     comment: description,
         // })
-        router.push(`/point/`)
+        router.push(`/point/?pointId=${newPoint.pointId}`)
     }
     return (
         <SecondaryThemeProvider>

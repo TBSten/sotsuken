@@ -11,6 +11,7 @@ import { Delete } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Container, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { FC } from 'react';
 
 const staleTime = 60 * 60 * 1000
@@ -33,6 +34,10 @@ const PointListPage: NextPage<Props> = ({ }) => {
         })
         await points.refetch({ stale: false })
     }
+
+    const router = useRouter()
+    const selectedPointId = router.query.pointId as string | undefined
+        ?? null
     return (
         <SecondaryThemeProvider>
             <BaseLayout>
@@ -57,6 +62,7 @@ const PointListPage: NextPage<Props> = ({ }) => {
                     {points.data ?
                         <PointTable
                             points={points.data}
+                            selectedPointId={selectedPointId}
                             onDelete={handleDelete}
                         />
                         :
@@ -74,8 +80,9 @@ export default PointListPage;
 interface PointTableProps {
     points: Point[]
     onDelete: (point: Point) => void
+    selectedPointId: string | null
 }
-const PointTable: FC<PointTableProps> = ({ points, onDelete }) => {
+const PointTable: FC<PointTableProps> = ({ points, onDelete, selectedPointId }) => {
     return (
         <Container>
             <TableContainer>
@@ -103,6 +110,7 @@ const PointTable: FC<PointTableProps> = ({ points, onDelete }) => {
                                 key={point.pointId}
                                 point={point}
                                 onDelete={() => onDelete(point)}
+                                selected={selectedPointId === point.pointId}
                             />
                         )}
                         {points.length === 0 &&
@@ -131,15 +139,16 @@ const PointTable: FC<PointTableProps> = ({ points, onDelete }) => {
 interface PointRowProps {
     point: Point
     onDelete: () => void
+    selected: boolean
 }
-const PointRow: FC<PointRowProps> = ({ point, onDelete, }) => {
+const PointRow: FC<PointRowProps> = ({ point, onDelete, selected }) => {
     const confirmState = useConfirm()
 
     const createDate = new Date(point.createAt)
     const status = statusMap[point.status]
     const StatusIconComponent = status.icon
     return (
-        <TableRow key={point.pointId} selected>
+        <TableRow key={point.pointId} selected={selected} id={point.pointId}>
             <TableCell sx={{ minWidth: "fit-content", whiteSpace: "nowrap" }}>
                 {createDate.getMonth() + 1}
                 /
