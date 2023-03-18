@@ -1,6 +1,7 @@
 import Center from '@/components/Center';
 import Confirm, { useConfirm } from '@/components/Confirm';
 import DateView from '@/components/DateView';
+import Text from '@/components/Text';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import StatusView from '@/components/point/StatusView';
@@ -217,7 +218,11 @@ const PointRow: FC<PointRowProps> = ({ point, onDelete, selected }) => {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>申請理由</TableCell>
-                                        <TableCell>{point.description}</TableCell>
+                                        <TableCell>
+                                            <Text>
+                                                {point.description}
+                                            </Text>
+                                        </TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>申請状況</TableCell>
