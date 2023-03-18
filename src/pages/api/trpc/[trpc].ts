@@ -1,4 +1,5 @@
 import { getUser } from "@/auth/users";
+import { getAllNotifications } from "@/notification";
 import { addPoint, deletePoint, getAllPoints, getPoint, getTotalPoint } from "@/point";
 import { PointSchema } from "@/point/type";
 import { addSkillAssessment, deleteSkillAssessment, getAllSkillAssessment, updateSkillAssessment } from "@/skillAssessment";
@@ -79,6 +80,17 @@ export const appRouter = t.router({
             .query(async ({ input: userId }) => {
                 const user = await getUser(userId)
                 return user
+            }),
+    }),
+    notifications: t.router({
+        get: t.procedure
+            .query(async ({ ctx: { session } }) => {
+                const userId = session?.user.userId
+                if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                const user = await getUser(userId)
+                if (!user) throw new TRPCError({ code: "FORBIDDEN", message: "invalid user " + JSON.stringify(user) })
+                const notifications = await getAllNotifications(userId)
+                return { notifications, lastReadAt: user.lastReadAt }
             }),
     }),
     point: t.router({

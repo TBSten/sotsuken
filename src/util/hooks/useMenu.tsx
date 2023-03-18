@@ -3,7 +3,7 @@ import { useCallback, useRef } from "react"
 import { useOpen } from "./useOpen"
 
 export const useMenu = <RefType extends HTMLElement = HTMLButtonElement,>() => {
-    const { open, show, hide } = useOpen()
+    const { open, show, hide, toggle } = useOpen()
     const btnRef = useRef<RefType>(null)
     const menuProps: MenuProps = {
         open,
@@ -18,6 +18,7 @@ export const useMenu = <RefType extends HTMLElement = HTMLButtonElement,>() => {
         open,
         show,
         hide,
+        toggle,
         btnRef,
         menuProps,
         withHide,
