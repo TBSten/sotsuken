@@ -2,7 +2,6 @@
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import H1 from '@/components/section/H1';
-import Section from '@/components/section/Section';
 import { SkillAssessment } from '@/skillAssessment/types';
 import { trpc } from '@/trpc';
 import { Alert, Box, CircularProgress, Divider, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
@@ -16,13 +15,9 @@ const SkillAssessmentListPage: NextPage<Props> = ({ }) => {
 
     return (
         <BaseLayout>
-            <LayoutContent>
-                <Section>
-                    <H1>
-                        星取表の一覧
-                    </H1>
-                </Section>
-            </LayoutContent>
+            <H1>
+                星取表の一覧
+            </H1>
             <Divider />
             <LayoutContent>
                 {searchResult.data

@@ -1,10 +1,7 @@
 import Center from '@/components/Center';
-import BaseHeader from '@/components/layout/BaseHeader';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import H1 from '@/components/section/H1';
-import Section from '@/components/section/Section';
-import SectionContent from '@/components/section/SectionContent';
 import SkillAssessmentCard from "@/components/skillAssessment/SkillAssessmentCard";
 import { getSkillAssessmentsByUserId } from '@/skillAssessment';
 import { trpc } from '@/trpc';
@@ -31,28 +28,20 @@ const SkillAssessmentEditPage: NextPage<Props> = ({ stars: defaultSkillAssessmen
     } = useSkillAssessments(defaultSkillAssessment)
 
     return (
-        <BaseLayout header={
-            <BaseHeader
-                title="星取表の編集"
-            />
-        }>
+        <BaseLayout>
+            <H1>星取表の編集</H1>
             <LayoutContent>
-                <Section>
-                    <H1>星取表の編集</H1>
-                    <SectionContent>
-                        <SkillAssessmentTable
-                            skillAssessments={skillAssessments}
-                            onAdd={addSkillAssessment}
-                            isAdding={isAdding}
-                            onSaveChange={updateSkillAssessment}
-                            isSaving={isUpdating}
-                            onDelete={deleteSkillAssessment}
-                            isDeleting={isDeleting}
-                            onMoveDown={() => { alert("not implement") }}
-                            onMoveUp={() => { alert("not implement") }}
-                        />
-                    </SectionContent>
-                </Section>
+                <SkillAssessmentTable
+                    skillAssessments={skillAssessments}
+                    onAdd={addSkillAssessment}
+                    isAdding={isAdding}
+                    onSaveChange={updateSkillAssessment}
+                    isSaving={isUpdating}
+                    onDelete={deleteSkillAssessment}
+                    isDeleting={isDeleting}
+                    onMoveDown={() => { alert("not implement") }}
+                    onMoveUp={() => { alert("not implement") }}
+                />
             </LayoutContent>
         </BaseLayout>
     );

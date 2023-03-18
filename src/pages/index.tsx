@@ -41,7 +41,7 @@ const Top: NextPage<Props> = ({ }) => {
               </Button>
             </Center>
           </Grid>
-          <Grid item xs={12} md height="100%" overflow="auto">
+          <Grid item xs={12} md height={{ xs: "auto", sm: "100%" }} overflow="auto">
             <MainMenus />
           </Grid>
         </Grid>

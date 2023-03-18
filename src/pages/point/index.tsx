@@ -48,7 +48,7 @@ const PointListPage: NextPage<Props> = ({ }) => {
                 <H1>ポイント 履歴</H1>
                 <LayoutContent>
                     <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems="center">
-                        <Box fontSize={t => t.typography.h3.fontSize}>
+                        <Box fontSize={t => t.typography.h3.fontSize} textAlign="center">
                             合計
                             {" "}
                             <Box component="span" fontSize="1.2em" fontWeight="bold">
