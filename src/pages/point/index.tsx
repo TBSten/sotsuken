@@ -1,18 +1,21 @@
 import Center from '@/components/Center';
 import Confirm, { useConfirm } from '@/components/Confirm';
+import DateView from '@/components/DateView';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
+import StatusView from '@/components/point/StatusView';
 import H1 from '@/components/section/H1';
-import { Point, statusMap } from '@/point/type';
+import { Point } from '@/point/type';
 import { SecondaryThemeProvider } from '@/styles/theme';
 import { trpc } from '@/trpc';
+import { useOpen } from '@/util/hooks/useOpen';
 import { summaryString } from '@/util/summaryString';
-import { Delete } from '@mui/icons-material';
+import { Delete, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Container, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 const staleTime = 60 * 60 * 1000
 
@@ -144,48 +147,91 @@ interface PointRowProps {
 const PointRow: FC<PointRowProps> = ({ point, onDelete, selected }) => {
     const confirmState = useConfirm()
 
-    const createDate = new Date(point.createAt)
-    const status = statusMap[point.status]
-    const StatusIconComponent = status.icon
+    const { open, toggle, show } = useOpen()
+    useEffect(() => {
+        if (selected) show()
+    }, [selected, show])
     return (
-        <TableRow key={point.pointId} selected={selected} id={point.pointId}>
-            <TableCell sx={{ minWidth: "fit-content", whiteSpace: "nowrap" }}>
-                {createDate.getMonth() + 1}
-                /
-                {createDate.getDate()}
-                {" "}
-                {createDate.getHours()}
-                :
-                {createDate.getMinutes()}
-            </TableCell>
-            <TableCell>
-                {point.point}{" "}点
-            </TableCell>
-            <TableCell>
-                {summaryString(point.description, 80)}
-            </TableCell>
-            <TableCell sx={{ whiteSpace: "nowrap" }}>
-                <Center direction="row" justifyContent="flex-start">
-                    <StatusIconComponent color={status.color} />
-                    <Box component="span">
-                        {status.text} {" "}
-                    </Box>
-                </Center>
-            </TableCell>
-            <TableCell sx={{ whiteSpace: "nowrap" }}>
-                <Tooltip title="削除">
-                    <IconButton
-                        disabled={point.status !== "pending"}
-                        onClick={confirmState.confirm}
-                    >
-                        <Delete />
+        <>
+            <TableRow key={point.pointId} selected={selected} id={point.pointId}>
+                <TableCell sx={{ minWidth: "fit-content", whiteSpace: "nowrap" }}>
+                    <DateView date={point.createAt} />
+                </TableCell>
+                <TableCell>
+                    {point.point}{" "}点
+                </TableCell>
+                <TableCell>
+                    {summaryString(point.description, 80)}
+                </TableCell>
+                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {/* <Center direction="row" justifyContent="flex-start">
+                        <StatusIconComponent color={status.color} />
+                        <Box component="span">
+                            {status.text} {" "}
+                        </Box>
+                    </Center> */}
+                    <StatusView status={point.status} />
+                </TableCell>
+                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    <IconButton onClick={toggle}>
+                        {open
+                            ? <KeyboardArrowUp />
+                            : <KeyboardArrowDown />
+                        }
+
                     </IconButton>
-                </Tooltip>
-            </TableCell>
-            <Confirm {...confirmState.props} onOk={onDelete} color="error">
-                削除してもいいですか？
-            </Confirm>
-        </TableRow>
+                    <Tooltip title="削除">
+                        <IconButton
+                            disabled={point.status !== "pending"}
+                            onClick={confirmState.confirm}
+                        >
+                            <Delete />
+                        </IconButton>
+                    </Tooltip>
+                </TableCell>
+                <Confirm {...confirmState.props} onOk={onDelete} color="error">
+                    削除してもいいですか？
+                </Confirm>
+            </TableRow>
+            {open &&
+                <TableRow selected={selected}>
+                    <TableCell colSpan={5} sx={{ pl: { xs: 2, sm: 6 } }}>
+                        <TableContainer>
+                            <Table size="small">
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell component="th" align='left' sx={{ verticalAlign: "top" }}>
+                                            申請日時
+                                        </TableCell>
+                                        <TableCell>
+                                            <DateView date={point.createAt} />
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>
+                                            ポイント
+                                        </TableCell>
+                                        <TableCell>
+                                            {point.point}点
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>申請理由</TableCell>
+                                        <TableCell>{point.description}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>申請状況</TableCell>
+                                        <TableCell>
+                                            <StatusView status={point.status} />
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </TableCell>
+                </TableRow>
+            }
+        </>
     );
 }
 

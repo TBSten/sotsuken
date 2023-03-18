@@ -67,7 +67,7 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
                             label="申請理由"
                             fullWidth
                             multiline maxRows={3}
-                            placeholder='例) 記事を書いた、ミーティングを実施した'
+                            placeholder='例) 記事を書いた'
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                         />
