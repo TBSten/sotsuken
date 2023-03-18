@@ -2,7 +2,6 @@ import Center from '@/components/Center';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import H1 from '@/components/section/H1';
-import { PointComment } from '@/point/type';
 import { SecondaryThemeProvider } from '@/styles/theme';
 import { trpc } from '@/trpc';
 import { Alert, Box, Button, Link, TextField } from '@mui/material';
@@ -21,10 +20,7 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
     const [point, setPoint] = useState<number>(1)
     const addPoint = trpc.point.add.useMutation()
 
-    const [comment, setComment] = useState<Partial<PointComment>>({
-        text: "",
-    })
-    const addPointComment = trpc.point.comment.add.useMutation()
+    const [description, setDescription] = useState<string>("")
 
     const router = useRouter()
     const onSend = async () => {
@@ -32,12 +28,13 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
         if (!userId) throw new Error("not implement userId is invalid")
         const newPoint = await addPoint.mutateAsync({
             point,
+            description,
         })
-        const newComment = await addPointComment.mutateAsync({
-            pointOwnerId: userId,
-            pointId: newPoint.pointId,
-            comment,
-        })
+        // const newComment = await addPointComment.mutateAsync({
+        //     pointOwnerId: userId,
+        //     pointId: newPoint.pointId,
+        //     comment: description,
+        // })
         router.push(`/point/`)
     }
     return (
@@ -71,16 +68,16 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
                             fullWidth
                             multiline maxRows={3}
                             placeholder='例) 記事を書いた、ミーティングを実施した'
-                            value={comment.text}
-                            onChange={e => setComment(p => ({ ...p, text: e.target.value }))}
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
                         />
                     </Box>
                     <Center>
-                        <Button variant='contained' onClick={onSend} disabled={addPoint.isLoading || addPointComment.isLoading}>
+                        <Button variant='contained' onClick={onSend} disabled={addPoint.isLoading || addPoint.isSuccess}>
                             申請する
                         </Button>
                     </Center>
-                    {addPoint.isSuccess && addPointComment.isSuccess &&
+                    {addPoint.isSuccess &&
                         <Alert severity='success'>
                             送信されました
                         </Alert>

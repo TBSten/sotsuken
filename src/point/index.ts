@@ -1,4 +1,5 @@
 import { users } from "@/auth/users";
+import { db } from "@/gcp/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { pointConverter } from "./converter";
 import { Point } from "./type";
@@ -14,12 +15,29 @@ export const addPoint = async (userId: string, input: Partial<Point>) => {
         pointId,
         status: "pending",
         point: 1,
+        description: "",
         createAt: now,
         updateAt: now,
         ...input,
     }
     await points(userId).doc(pointId).set(newPoint)
     return newPoint
+}
+
+export const getPoint = async (userId: string, pointId?: string) => {
+    if (!pointId) {
+        pointId = userId
+        const snap = await db.collectionGroup("points")
+            .withConverter(pointConverter)
+            .where("pointId", "==", pointId)
+            .get()
+        if (snap.docs.length !== 1) {
+            throw new Error("not implement docs length is invalid . " + pointId)
+        }
+        return snap.docs[0].data()
+    }
+    const snap = await points(userId).doc(pointId).get()
+    return snap.data()
 }
 
 export const getAllPoints = async (userId: string) => {
@@ -40,11 +58,15 @@ export const getPendingoints = async (userId: string) => {
 }
 
 export const getTotalPoint = async (userId: string) => {
-    const snap = await points(userId)
-        .where("status", "==", "granted")
+    const grantedSnap = await points(userId)
+        .where("status", "in", ["granted", "auto"])
         .get()
-    const grantedPoints = snap.docs.map(d => d.data())
-    return grantedPoints.reduce((ans, p) => ans + p.point, 0)
+    const allPoints = grantedSnap.docs.map(d => d.data())
+    const total = allPoints.reduce((ans, p) => ans + p.point, 0)
+    return total
 }
 
-
+export const deletePoint = async (userId: string, pointId: string) => {
+    await points(userId).doc(pointId).delete()
+    // await deletePointComment(userId, pointId)
+}

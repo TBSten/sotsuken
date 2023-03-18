@@ -10,7 +10,7 @@ const LayoutContent: FC<LayoutContentProps> = ({ fill = false, children }) => {
         ? { width: "100%", height: "100%" }
         : {}
     return (
-        <Box p={{ sm: 1, md: 2 }} {...boxProps}>
+        <Box p={{ xs: 0.5, sm: 1, md: 2 }} {...boxProps}>
             {children}
         </Box>
     );

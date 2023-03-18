@@ -1,7 +1,6 @@
 import { getUser } from "@/auth/users";
-import { addPoint } from "@/point";
-import { addPointComment } from "@/point/comments";
-import { PointCommentSchema, PointSchema } from "@/point/type";
+import { addPoint, deletePoint, getAllPoints, getPoint, getTotalPoint } from "@/point";
+import { PointSchema } from "@/point/type";
 import { addSkillAssessment, deleteSkillAssessment, getAllSkillAssessment, updateSkillAssessment } from "@/skillAssessment";
 import { SkillAssessment, SkillAssessmentTemplate, SkillAssessmentTemplateSchema } from "@/skillAssessment/types";
 import { TRPCError, initTRPC } from "@trpc/server";
@@ -92,20 +91,36 @@ export const appRouter = t.router({
                 const newPoint = await addPoint(userId, input)
                 return newPoint
             }),
-        comment: t.router({
-            add: t.procedure
-                .input(z.object({
-                    pointOwnerId: z.string(),
-                    pointId: z.string(),
-                    comment: PointCommentSchema.partial(),
-                }))
-                .mutation(async ({ input: { pointOwnerId, pointId, comment }, ctx: { session } }) => {
-                    const authorId = session?.user.userId
-                    if (!authorId) throw new TRPCError({ code: "UNAUTHORIZED" })
-                    const newComment = await addPointComment(pointOwnerId, pointId, authorId, comment)
-                    return newComment
-                })
-        }),
+        getAll: t.procedure
+            .query(async ({ ctx: { session } }) => {
+                const userId = session?.user.userId
+                if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                return await getAllPoints(userId)
+            }),
+        getOne: t.procedure
+            .input(z.object({
+                pointId: z.string(),
+            }))
+            .query(async ({ input: { pointId } }) => {
+                return await getPoint(pointId)
+            }),
+        total: t.procedure
+            .input(z.object({
+                userId: z.string(),
+            }))
+            .query(async ({ input: { userId } }) => {
+                const totalPoint = await getTotalPoint(userId)
+                return totalPoint
+            }),
+        delete: t.procedure
+            .input(z.object({
+                pointId: z.string(),
+                userId: z.string(),
+            }))
+            .mutation(async ({ input: pointId, ctx }) => {
+                // TODO 認証
+                await deletePoint(pointId.userId, pointId.pointId)
+            }),
     }),
 })
 export const hoge = "this is very important value"
