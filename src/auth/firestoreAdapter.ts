@@ -1,7 +1,7 @@
 import { Firestore, Timestamp } from "@google-cloud/firestore"
 import { Adapter, AdapterAccount, AdapterSession, AdapterUser, VerificationToken } from "next-auth/adapters"
 import { v4 as uuidv4 } from "uuid"
-import { initForSignUpUser } from "./users"
+import { initForSignUpUser, linkSlackIdAndUserId } from "./users"
 
 
 // for consistency, store all fields as snake_case in the database
@@ -135,6 +135,7 @@ const FirestoreAdapter = (db: Firestore): Adapter => {
             let user: AdapterUser = {
                 ...userInit,
                 id: userId,
+                lastReadAt: 0,
             }
             user = await initForSignUpUser(user)
             await C.users.doc(userId).set(user)
@@ -196,6 +197,10 @@ const FirestoreAdapter = (db: Firestore): Adapter => {
         async linkAccount(accountInit) {
             const ref = await C.accounts.add(accountInit)
             const account = await ref.get().then((doc) => doc.data())
+
+            const accountId = account?.providerAccountId
+            if (!accountId) throw new Error(`invalid account id when link account : ${accountId}`)
+            await linkSlackIdAndUserId(accountId, accountInit.userId)
             return account ?? null
         },
 

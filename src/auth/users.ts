@@ -41,3 +41,14 @@ export const updateUser = async (userId: string, input: Partial<User>) => {
     await users.doc(userId).set(input, { merge: true })
     return await getUser(userId)
 }
+
+export const linkSlackIdAndUserId = async (slackId: string, userId: string) => {
+    users.doc(userId).set({ slackId, }, { merge: true })
+}
+
+export const getUserBySlackId = async (slackId: string) => {
+    const snap = await users.where("slackId", "==", slackId).get()
+    if (snap.docs.length === 0) return null
+    if (snap.docs.length !== 1) throw new Error("invalid users size ")
+    return snap.docs[0].data()
+}

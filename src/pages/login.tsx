@@ -8,8 +8,11 @@ interface Props {
 const Login: NextPage<Props> = ({ }) => {
     return (
         <BaseLayout>
-            <Button onClick={() => signIn("google", { callbackUrl: "/" })}>
+            {/* <Button onClick={() => signIn("google", { callbackUrl: "/" })}>
                 Googleでログイン
+            </Button> */}
+            <Button onClick={() => signIn("slack", { callbackUrl: "/" })}>
+                Slackでログイン
             </Button>
         </BaseLayout>
     );

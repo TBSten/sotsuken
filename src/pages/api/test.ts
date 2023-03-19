@@ -1,18 +1,7 @@
-import { db } from "@/gcp/firestore";
+import { getBonusTargets } from "@/point/batch";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
-    const docId = Math.random() + ""
-    await db.collection("test")
-        .doc(docId)
-        .set({
-            arr: [
-                { name: "hoge" },
-            ],
-        })
-    const snap = await db.collection("test")
-        .get()
-    console.log(snap.docs.map(d => d.data()))
-    res.json({})
+    return res.json(await getBonusTargets())
 }
 export default handler

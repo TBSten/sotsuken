@@ -8,6 +8,7 @@ export const UserSchema = z.object({
     image: z.string().nullish(),
     // stars: SkillAssessmentSchema.array(),
     lastReadAt: z.number(),
+    slackId: z.string(),
 })
 
 
@@ -20,6 +21,7 @@ declare module "next-auth" {
     interface User extends DefaultUser {
         // stars: SkillAssessment[]
         lastReadAt: number
+        slackId: string
     }
 }
 

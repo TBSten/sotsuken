@@ -162,7 +162,9 @@ const PointRow: FC<PointRowProps> = ({ point, onDelete, selected }) => {
                     {point.point}{" "}点
                 </TableCell>
                 <TableCell>
-                    {summaryString(point.description, 80)}
+                    <Text>
+                        {summaryString(point.description, 80)}
+                    </Text>
                 </TableCell>
                 <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {/* <Center direction="row" justifyContent="flex-start">
