@@ -8,10 +8,12 @@ import StatusView from '@/components/point/StatusView';
 import H1 from '@/components/section/H1';
 import { Point } from '@/point/type';
 import { SecondaryThemeProvider } from '@/styles/theme';
+import { useResponsive } from '@/styles/useResponsive';
 import { trpc } from '@/trpc';
+import { copy } from '@/util/copy';
 import { useOpen } from '@/util/hooks/useOpen';
 import { summaryString } from '@/util/summaryString';
-import { Delete, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { AddBox, ContentCopy, Delete, KeyboardArrowDown, KeyboardArrowUp, Replay } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Container, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
@@ -24,7 +26,7 @@ interface Props {
 }
 const PointListPage: NextPage<Props> = ({ }) => {
     const { data: session } = useSession()
-    const points = trpc.point.getAll.useQuery(undefined, { staleTime })
+    const points = trpc.point.getAll.useQuery({}, { staleTime })
 
     const totalPoint = trpc.point.total.useQuery({ userId: session?.user.userId ?? "" }, { enabled: !!session, staleTime })
 
@@ -42,6 +44,8 @@ const PointListPage: NextPage<Props> = ({ }) => {
     const router = useRouter()
     const selectedPointId = router.query.pointId as string | undefined
         ?? null
+
+    const { responsive } = useResponsive()
     return (
         <SecondaryThemeProvider>
             <BaseLayout>
@@ -57,9 +61,30 @@ const PointListPage: NextPage<Props> = ({ }) => {
                             {" "}
                             点
                         </Box>
-                        <Button variant='contained' href="/point/new">
-                            申請する
-                        </Button>
+                        <Box>
+                            {responsive(
+                                <Button variant='text' onClick={() => {
+                                    totalPoint.refetch()
+                                    points.refetch()
+                                }}>
+                                    再読み込み
+                                </Button>,
+                                <IconButton color="primary" onClick={() => {
+                                    totalPoint.refetch()
+                                    points.refetch()
+                                }}>
+                                    <Replay />
+                                </IconButton>
+                            )}
+                            {responsive(
+                                <Button variant='contained' href="/point/new">
+                                    申請する
+                                </Button>,
+                                <IconButton color="primary" href="/point/new">
+                                    <AddBox />
+                                </IconButton>
+                            )}
+                        </Box>
                     </Stack>
                 </LayoutContent>
                 <LayoutContent>
@@ -152,6 +177,10 @@ const PointRow: FC<PointRowProps> = ({ point, onDelete, selected }) => {
     useEffect(() => {
         if (selected) show()
     }, [selected, show])
+
+    const handleCopy = async (pointId: string) => {
+        await copy(`${location.origin}/point?pointId=${pointId}`)
+    }
     return (
         <>
             <TableRow key={point.pointId} selected={selected} id={point.pointId}>
@@ -230,6 +259,14 @@ const PointRow: FC<PointRowProps> = ({ point, onDelete, selected }) => {
                                         <TableCell>申請状況</TableCell>
                                         <TableCell>
                                             <StatusView status={point.status} />
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell></TableCell>
+                                        <TableCell>
+                                            <IconButton size='small' onClick={() => handleCopy(point.pointId)}>
+                                                <ContentCopy />
+                                            </IconButton>
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

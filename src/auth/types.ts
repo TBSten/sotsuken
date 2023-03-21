@@ -9,6 +9,7 @@ export const UserSchema = z.object({
     // stars: SkillAssessmentSchema.array(),
     lastReadAt: z.number(),
     slackId: z.string(),
+    isAdmin: z.boolean(),
 })
 
 
@@ -22,6 +23,7 @@ declare module "next-auth" {
         // stars: SkillAssessment[]
         lastReadAt: number
         slackId: string
+        isAdmin: boolean
     }
 }
 

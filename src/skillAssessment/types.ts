@@ -18,6 +18,10 @@ export const SkillAssessmentTemplateSchema = SkillAssessmentSchema.pick({
     assessment: true,
     comment: true,
     interest: true,
+}).extend({
+    templateId: z.string(),
+    createAt: z.number(),
+    updateAt: z.number(),
 })
 export type SkillAssessmentTemplate = z.infer<typeof SkillAssessmentTemplateSchema>
 

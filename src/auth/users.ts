@@ -52,3 +52,12 @@ export const getUserBySlackId = async (slackId: string) => {
     if (snap.docs.length !== 1) throw new Error("invalid users size ")
     return snap.docs[0].data()
 }
+
+export const isAdminUser = async (user: string | User | undefined | null) => {
+    if (!user) return false
+    if (typeof user === "string") {
+        const u = await getUser(user)
+        return u?.isAdmin ?? false
+    }
+    return user.isAdmin
+}

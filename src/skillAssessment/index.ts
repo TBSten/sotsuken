@@ -15,7 +15,7 @@ export const initSkillAssessment = async (user: AdapterUser): Promise<AdapterUse
     const batch = db.batch()
     const now = Date.now()
 
-    skillAssessmentTemplates.forEach(skillAssessmentTemplate => {
+    skillAssessmentTemplates.forEach((skillAssessmentTemplate, i) => {
         const assessmentId = uuidv4()
         batch.set<SkillAssessment>(
             skillAssessments.doc(assessmentId),
@@ -23,8 +23,8 @@ export const initSkillAssessment = async (user: AdapterUser): Promise<AdapterUse
                 ...skillAssessmentTemplate,
                 assessmentId,
                 userId: user.id,
-                createAt: now,
-                updateAt: now,
+                createAt: now + i,
+                updateAt: now + i,
             },
         )
     })
@@ -60,9 +60,9 @@ export const getAllSkillAssessment = async (): Promise<SkillAssessment[]> => {
 export const addSkillAssessment = async (userId: string, input: SkillAssessmentTemplate | SkillAssessment) => {
     const assessmentId = uuidv4()
     const skillAssessment: SkillAssessment = {
+        ...input,
         createAt: Date.now(),
         updateAt: Date.now(),
-        ...input,
         assessmentId,
         userId,
     }

@@ -136,6 +136,7 @@ const FirestoreAdapter = (db: Firestore): Adapter => {
                 ...userInit,
                 id: userId,
                 lastReadAt: 0,
+                isAdmin: false,
             }
             user = await initForSignUpUser(user)
             await C.users.doc(userId).set(user)

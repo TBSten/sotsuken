@@ -10,7 +10,7 @@ const StatusView: FC<StatusViewProps> = ({ status }) => {
     const statusInfo = statusMap[status]
     const StatusIconComponent = statusInfo.icon
     return (
-        <Center direction="row" justifyContent="flex-start">
+        <Center direction="row" justifyContent="flex-start" display="inline-flex">
             <StatusIconComponent color={statusInfo.color} />
             <Box component="span">
                 {statusInfo.text} {" "}
