@@ -73,7 +73,7 @@ export const addSkillAssessment = async (userId: string, input: SkillAssessmentT
     return returnValue
 }
 
-export const updateSkillAssessment = async (assessmentId: string, skillAssessment: SkillAssessmentTemplate) => {
+export const updateSkillAssessment = async (assessmentId: string, skillAssessment: SkillAssessment) => {
     await skillAssessments.doc(assessmentId).set({
         ...skillAssessment,
         updateAt: Date.now(),

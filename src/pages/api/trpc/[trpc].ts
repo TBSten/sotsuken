@@ -21,9 +21,7 @@ const createContext = async ({ req, res }: trpcNext.CreateNextContextOptions) =>
 
 export const t = initTRPC.context<typeof createContext>().create()
 
-const UpdateSkillAssessmentInput = SkillAssessmentTemplateSchema.extend({
-    assessmentId: z.string(),
-})
+const UpdateSkillAssessmentInput = SkillAssessmentSchema
 
 export const appRouter = t.router({
     skillAssessment: t.router({

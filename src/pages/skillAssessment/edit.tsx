@@ -60,7 +60,7 @@ export function useSkillAssessments(init: SkillAssessment[]) {
         skillAssessments,
         setSkillAssessments,
         add: useCallback(async () => {
-            const newSkillAssessment = await addSA.mutateAsync()
+            const newSkillAssessment = await addSA.mutateAsync({})
             setSkillAssessments(p => {
                 const newSkillAssessments = [...p]
                 let idx = skillAssessments.findIndex(sa => sa.assessmentId === newSkillAssessment.assessmentId)
