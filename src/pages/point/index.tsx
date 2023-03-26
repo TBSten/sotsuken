@@ -14,7 +14,7 @@ import { copy } from '@/util/copy';
 import { useOpen } from '@/util/hooks/useOpen';
 import { summaryString } from '@/util/summaryString';
 import { AddBox, ContentCopy, Delete, KeyboardArrowDown, KeyboardArrowUp, Replay } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Container, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
+import { Box, Button, CircularProgress, Container, Divider, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -63,10 +63,13 @@ const PointListPage: NextPage<Props> = ({ }) => {
                         </Box>
                         <Box>
                             {responsive(
-                                <Button variant='text' onClick={() => {
-                                    totalPoint.refetch()
-                                    points.refetch()
-                                }}>
+                                <Button
+                                    variant='text'
+                                    onClick={() => {
+                                        totalPoint.refetch()
+                                        points.refetch()
+                                    }}
+                                >
                                     再読み込み
                                 </Button>,
                                 <IconButton color="primary" onClick={() => {
@@ -88,6 +91,7 @@ const PointListPage: NextPage<Props> = ({ }) => {
                     </Stack>
                 </LayoutContent>
                 <LayoutContent>
+                    {points.isFetching && <CircularProgress />}
                     {points.data ?
                         <PointTable
                             points={points.data}
@@ -228,50 +232,54 @@ const PointRow: FC<PointRowProps> = ({ point, onDelete, selected }) => {
             {open &&
                 <TableRow selected={selected}>
                     <TableCell colSpan={5} sx={{ pl: { xs: 2, sm: 6 } }}>
-                        <TableContainer>
-                            <Table size="small">
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell component="th" align='left' sx={{ verticalAlign: "top" }}>
-                                            申請日時
-                                        </TableCell>
-                                        <TableCell>
-                                            <DateView date={point.createAt} />
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            ポイント
-                                        </TableCell>
-                                        <TableCell>
-                                            {point.point}点
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>申請理由</TableCell>
-                                        <TableCell>
-                                            <Text>
-                                                {point.description}
-                                            </Text>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>申請状況</TableCell>
-                                        <TableCell>
-                                            <StatusView status={point.status} />
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell>
-                                            <IconButton size='small' onClick={() => handleCopy(point.pointId)}>
-                                                <ContentCopy />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        <Stack direction="row">
+                            <Divider orientation='vertical' flexItem />
+                            <Box width="1em" height="100%" />
+                            <TableContainer>
+                                <Table size="small">
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell component="th" align='left' sx={{ verticalAlign: "top" }}>
+                                                申請日時
+                                            </TableCell>
+                                            <TableCell>
+                                                <DateView date={point.createAt} />
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>
+                                                ポイント
+                                            </TableCell>
+                                            <TableCell>
+                                                {point.point}点
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>申請理由</TableCell>
+                                            <TableCell>
+                                                <Text>
+                                                    {point.description}
+                                                </Text>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>申請状況</TableCell>
+                                            <TableCell>
+                                                <StatusView status={point.status} />
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell></TableCell>
+                                            <TableCell>
+                                                <IconButton size='small' onClick={() => handleCopy(point.pointId)}>
+                                                    <ContentCopy />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Stack>
                     </TableCell>
                 </TableRow>
             }
