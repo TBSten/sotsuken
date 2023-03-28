@@ -41,14 +41,10 @@ export default AdminTop;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions)
-    const userId = session?.user.userId
-    if (!userId) return {
-        notFound: true,
-    }
-    const user = await getUser(userId)
-    if (!user?.isAdmin) return {
-        notFound: true,
-    }
+    const sessionUserId = session?.user.userId
+    if (!sessionUserId) return { notFound: true }
+    const user = await getUser(sessionUserId)
+    if (!user?.isAdmin) return { notFound: true }
     return {
         props: {}
     }

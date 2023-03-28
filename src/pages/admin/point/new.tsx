@@ -1,12 +1,14 @@
+import { getUser } from '@/auth/users';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import H1 from '@/components/section/H1';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Point } from '@/point/type';
 import { trpc } from '@/trpc';
 import { useSnackbar } from '@/util/hooks/useSnackbar';
 import { Box, Button, Chip, CircularProgress, ListItemAvatar, ListItemText, MenuItem, Select, Snackbar, Stack, TextField } from '@mui/material';
-import { NextPage } from 'next';
-import { User } from 'next-auth';
+import { GetServerSideProps, NextPage } from 'next';
+import { User, getServerSession } from 'next-auth';
 import Image from 'next/image';
 import { FC, useState } from 'react';
 
@@ -141,4 +143,14 @@ const UserSelect: FC<UserSelectProps> = ({ user, onChange, label }) => {
     );
 }
 
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+    const session = await getServerSession(ctx.req, ctx.res, authOptions)
+    const sessionUserId = session?.user.userId
+    if (!sessionUserId) return { notFound: true }
+    const user = await getUser(sessionUserId)
+    if (!user?.isAdmin) return { notFound: true }
+    return {
+        props: {}
+    }
+}
 
