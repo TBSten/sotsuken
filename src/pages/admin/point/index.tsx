@@ -88,13 +88,13 @@ const AdminPointListPage: NextPage<Props> = ({ }) => {
                                     </TableCell>
                                     <TableCell>
                                         <IconButton
-                                            disabled={p.status === "auto" || p.status === "granted"}
+                                            disabled={p.status === "auto" || p.status === "granted" || p.status === "deducte"}
                                             onClick={() => handleGrant(p.pointId)}
                                         >
                                             <ThumbUp />
                                         </IconButton>
                                         <IconButton
-                                            disabled={p.status === "auto" || p.status === "rejected"}
+                                            disabled={p.status === "auto" || p.status === "rejected" || p.status === "deducte"}
                                             onClick={() => handleReject(p.pointId)}
                                         >
                                             <ThumbDown />
