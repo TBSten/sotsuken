@@ -27,8 +27,10 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
         const userId = session?.user.userId
         if (!userId) throw new Error("not implement userId is invalid")
         const newPoint = await addPoint.mutateAsync({
-            point,
-            description,
+            point: {
+                point,
+                description,
+            },
         })
         // const newComment = await addPointComment.mutateAsync({
         //     pointOwnerId: userId,

@@ -86,7 +86,7 @@ export const getPendingPoints = async (userId: string) => {
 
 export const getTotalPoint = async (userId: string) => {
     const grantedSnap = await userPoints(userId)
-        .where("status", "in", ["granted", "auto"])
+        .where("status", "in", ["granted", "auto", "deducte"])
         .get()
     const allPoints = grantedSnap.docs.map(d => d.data())
     const total = allPoints.reduce((ans, p) => ans + p.point, 0)

@@ -29,6 +29,9 @@ const AdminTop: NextPage<Props> = ({ }) => {
                     <SquareButton color="secondary" href="/admin/point">
                         ポイント一覧
                     </SquareButton>
+                    <SquareButton color="secondary" href="/admin/point/new">
+                        ポイント管理
+                    </SquareButton>
                 </Stack>
             </LayoutContent>
         </BaseLayout>
