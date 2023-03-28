@@ -2,16 +2,22 @@ import { useResponsive } from "@/styles/useResponsive";
 import { NavigateNext } from "@mui/icons-material";
 import { Box, Drawer, List, ListItem, ListItemButton } from "@mui/material";
 import { atom, useAtom } from "jotai";
-import { FC, useCallback } from "react";
+import { FC, ReactNode, useCallback } from "react";
 
 interface BaseMenuProps {
+    isAdmin?: boolean
 }
-const BaseMenu: FC<BaseMenuProps> = () => {
+const BaseMenu: FC<BaseMenuProps> = ({
+    isAdmin = false,
+}) => {
     const topMenu = useTopMenu()
     const { responsive } = useResponsive()
 
     return (
-        <Drawer anchor={responsive("left", "bottom")} open={topMenu.open} onClose={topMenu.hide}>
+        <Drawer
+            anchor={responsive("left", "bottom")}
+            open={topMenu.open} onClose={topMenu.hide}
+        >
             <MenuList />
         </Drawer>
     )
@@ -22,8 +28,9 @@ export default BaseMenu;
 interface MenuListProps {
 }
 const MenuList: FC<MenuListProps> = () => {
+    const { isPc } = useResponsive()
     return (
-        <List>
+        <List sx={{ maxHeight: "80vh" }}>
             <ListItem sx={{ fontSize: "2em" }}>
                 卒業研究
                 <Box width="2em" height="1em" />
@@ -61,7 +68,53 @@ const MenuList: FC<MenuListProps> = () => {
                     <NavigateNext />
                 </ListItemButton>
             </ListItem>
+            <ListItem>
+                管理者
+            </ListItem>
+            <MenuButton href="/admin/members">
+                トップ
+            </MenuButton>
+            <MenuButton href="/admin/members">
+                メンバ一覧
+            </MenuButton>
+            <MenuButton href="/admin/skillAssessment/templates">
+                星取表の {isPc && <br />}
+                デフォルトスキル  {isPc && <br />}
+                編集  {isPc && <br />}
+            </MenuButton>
+            <MenuButton href="/admin/point">
+                ポイント一覧
+            </MenuButton>
+            <MenuButton href="/admin/point/new">
+                ポイント管理
+            </MenuButton>
         </List>
+    );
+}
+
+interface MenuItemProps {
+    children: ReactNode
+}
+const MenuItem: FC<MenuItemProps> = ({ children }) => {
+    return (
+        <ListItem>
+            {children}
+        </ListItem>
+    );
+}
+interface MenuButtonProps {
+    children: ReactNode
+    href: string
+}
+const MenuButton: FC<MenuButtonProps> = ({ children, href }) => {
+    return (
+        <ListItem disablePadding>
+            <Box width="1em" />
+            <ListItemButton href={href}>
+                {children}
+                <NavigateNext />
+            </ListItemButton>
+        </ListItem>
     );
 }
 

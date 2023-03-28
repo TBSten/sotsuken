@@ -1,14 +1,17 @@
+import { getUser } from '@/auth/users';
 import DateView from '@/components/DateView';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import StatusView from '@/components/point/StatusView';
 import H1 from '@/components/section/H1';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import type { PointQuery } from '@/point';
 import { trpc } from '@/trpc';
 import { copy } from '@/util/copy';
 import { ContentCopy, ThumbDown, ThumbUp } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
+import { getServerSession } from 'next-auth';
 import { useState } from 'react';
 
 interface Props {
@@ -119,3 +122,14 @@ const AdminPointListPage: NextPage<Props> = ({ }) => {
     );
 }
 export default AdminPointListPage;
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+    const session = await getServerSession(ctx.req, ctx.res, authOptions)
+    const sessionUserId = session?.user.userId
+    if (!sessionUserId) return { notFound: true }
+    const user = await getUser(sessionUserId)
+    if (!user?.isAdmin) return { notFound: true }
+    return {
+        props: {}
+    }
+}

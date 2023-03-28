@@ -7,7 +7,7 @@ const SquareButton: FC<SquareButtonProps> = ({ variant = "outlined", sx, ...butt
     return (
         <Button
             variant={variant}
-            sx={{ aspectRatio: "1 / 1", fontWeight: "bold", textAlign: "center", ...sx }}
+            sx={{ aspectRatio: "1 / 1", fontWeight: "bold", textAlign: "center", minWidth: "fit-content", ...sx }}
             {...buttonProps}
         ></Button>
     );

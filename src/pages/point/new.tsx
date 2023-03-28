@@ -10,7 +10,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-const aboutPointRule = "https://www.notion.so/tbsten/e44790b5b4df49e487d3a1a6c130c91c"
+const aboutPointRule = "https://www.notion.so/tbsten/52dec0fd80de4594b92b21cc9f481766"
 
 interface Props {
 }
@@ -27,8 +27,10 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
         const userId = session?.user.userId
         if (!userId) throw new Error("not implement userId is invalid")
         const newPoint = await addPoint.mutateAsync({
-            point,
-            description,
+            point: {
+                point,
+                description,
+            },
         })
         // const newComment = await addPointComment.mutateAsync({
         //     pointOwnerId: userId,
@@ -66,7 +68,7 @@ const PointRequestPage: NextPage<Props> = ({ }) => {
                         <TextField
                             label="申請理由"
                             fullWidth
-                            multiline maxRows={3}
+                            multiline minRows={2}
                             placeholder='例) 記事を書いた'
                             value={description}
                             onChange={e => setDescription(e.target.value)}

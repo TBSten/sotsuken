@@ -3,14 +3,15 @@ import { AppBar, Box, CircularProgress, IconButton, Toolbar, Tooltip, Typography
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { FC } from "react";
-import Notifications from "../notification/Notifications";
 import { useTopMenu } from "./BaseMenu";
 
 interface BaseHeaderProps {
     title?: string
+    isAdmin?: boolean
 }
 const BaseHeader: FC<BaseHeaderProps> = ({
     title = "卒業研究",
+    isAdmin = false,
 }) => {
     const topMenu = useTopMenu()
     const { data: session, status } = useSession()
@@ -30,17 +31,13 @@ const BaseHeader: FC<BaseHeaderProps> = ({
                 {session &&
                     <Box>
                         <Tooltip title={`${session.user.name + "としてログイン中"}`}>
-                            <Notifications>
-                                {() =>
-                                    <Image
-                                        src={session.user.image ?? "/favicon.ico"}
-                                        alt={session.user.name ?? "無名のユーザ"}
-                                        width={40}
-                                        height={40}
-                                        style={{ borderRadius: "40px", boxShadow: theme.shadows[2] }}
-                                    />
-                                }
-                            </Notifications>
+                            <Image
+                                src={session.user.image ?? "/favicon.ico"}
+                                alt={session.user.name ?? "無名のユーザ"}
+                                width={40}
+                                height={40}
+                                style={{ borderRadius: "40px", boxShadow: theme.shadows[2] }}
+                            />
                         </Tooltip>
                     </Box>
                 }

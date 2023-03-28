@@ -1,11 +1,14 @@
+import { getUser } from '@/auth/users';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import H1 from '@/components/section/H1';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { SkillAssessmentTemplate } from '@/skillAssessment/types';
 import { trpc } from '@/trpc';
 import { Add, Delete } from '@mui/icons-material';
 import { Box, Button, Grid, IconButton, TextField } from '@mui/material';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
+import { getServerSession } from 'next-auth';
 import { FC, useState } from 'react';
 
 interface Props {
@@ -103,3 +106,13 @@ const TemplateRow: FC<TemplateRowProps> = ({ no, template, onSave, onDelete }) =
     );
 }
 
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+    const session = await getServerSession(ctx.req, ctx.res, authOptions)
+    const sessionUserId = session?.user.userId
+    if (!sessionUserId) return { notFound: true }
+    const user = await getUser(sessionUserId)
+    if (!user?.isAdmin) return { notFound: true }
+    return {
+        props: {}
+    }
+}

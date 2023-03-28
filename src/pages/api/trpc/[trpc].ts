@@ -135,12 +135,22 @@ export const appRouter = t.router({
     }),
     point: t.router({
         add: t.procedure
-            .input(PointSchema.partial())
+            .input(z.object({
+                point: PointSchema.partial(),
+                userId: z.string().optional(),
+            }))
             .mutation(async ({ input, ctx: { session } }) => {
-                const userId = session?.user.userId
-                // TODO 申請時は条件が揃ってないと追加できない
-                if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" })
-                const newPoint = await addPoint(userId, input)
+                const sessionUserId = session?.user.userId
+                const inputUserId = input.userId
+                const userId = inputUserId ?? sessionUserId ?? null
+                if (!sessionUserId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                const sessionUser = sessionUserId ? await getUser(sessionUserId) : null
+                if (
+                    !sessionUser?.isAdmin && // 実行者が管理者でもなく
+                    sessionUserId !== inputUserId // 実行者自身の実行でもない
+                ) throw new TRPCError({ code: "FORBIDDEN" })
+                if (!userId) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "not implement" })
+                const newPoint = await addPoint(userId, input.point)
                 return newPoint
             }),
         getAll: t.procedure
