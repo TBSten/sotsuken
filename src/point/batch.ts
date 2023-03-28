@@ -44,6 +44,8 @@ type Bonus = {
 
 
 export const totalPoints = async () => {
+    console.log("------ total points - start ------");
+
     // TODO: 前準備 処理
     await joinNotJoinedChannels()
     const userAndBonus: Record<string, Bonus[]> = {}
@@ -97,6 +99,7 @@ export const totalPoints = async () => {
     // console.log("userAndBonus", userAndBonus);
     logSummary(userAndBonus)
     // userAndBonusを使ってポイント付与
+    console.log("------ total points - end ------");
     await grantPoint(userAndBonus)
 }
 
@@ -128,6 +131,7 @@ const getMessagesAndReplies = async (channelId: string) => {
     toDate.setMilliseconds(0)
     const oldest = `${Math.floor(fromDate.getTime() / 1000)}`
     const latest = `${Math.floor(toDate.getTime() / 1000)}`
+    console.log("fromDate", fromDate, "toDate", toDate, oldest, latest);
     const result: Message[][] = []
     let messagesRes = (await client.conversations.history({ channel: channelId, inclusive: true, oldest, latest, }))
     let messages = messagesRes.messages ?? []
@@ -198,7 +202,7 @@ const grantPoint = async (userAndBonus: Record<string, Bonus[]>) => {
 }
 
 const logSummary = (userAndBonus: Record<string, Bonus[]>) => {
-    console.log("-------------------------------------");
+    console.log("- report ----------------------------");
     console.log(userAndBonus);
     console.log("-------------------------------------");
     Object.entries(userAndBonus).forEach(([slacUserId, bonuses]) => {
