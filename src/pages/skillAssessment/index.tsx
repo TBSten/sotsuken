@@ -1,4 +1,5 @@
 
+import Text from '@/components/Text';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import H1 from '@/components/section/H1';
@@ -34,6 +35,9 @@ const SkillAssessmentListPage: NextPage<Props> = ({ }) => {
                                     <TableCell sx={{ fontWeight: "bold" }}>
                                         評価
                                     </TableCell>
+                                    <TableCell sx={{ fontWeight: "bold" }}>
+                                        コメント
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -67,7 +71,7 @@ interface AssessmentListItemProps {
     skillAssessment: SkillAssessment
 }
 const AssessmentRow: FC<AssessmentListItemProps> = ({
-    skillAssessment: { assessment, skill, userId },
+    skillAssessment: { assessment, skill, userId, comment },
 }) => {
     const user = trpc.user.get.useQuery(userId)
 
@@ -87,6 +91,11 @@ const AssessmentRow: FC<AssessmentListItemProps> = ({
                     {assessment * 100}
                 </Box>
                 /100
+            </TableCell>
+            <TableCell>
+                <Text>
+                    {comment}
+                </Text>
             </TableCell>
         </TableRow>
     );
