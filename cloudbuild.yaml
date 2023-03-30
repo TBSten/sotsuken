@@ -22,5 +22,6 @@ steps:
   - '--set-secrets=SLACK_BOT_TOKEN=SLACK_BOT_TOKEN:1'
   - '--set-secrets=SLACK_CLIENT_ID=SLACK_CLIENT_ID:1'
   - '--set-secrets=SLACK_CLIENT_SECRET=SLACK_CLIENT_SECRET:1'
+  - '--allow-unauthenticated'
 images:
 - 'gcr.io/$PROJECT_ID/web-server:$COMMIT_SHA'
