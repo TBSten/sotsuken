@@ -131,7 +131,7 @@ const getMessagesAndReplies = async (channelId: string) => {
     toDate.setMilliseconds(0)
     const oldest = `${Math.floor(fromDate.getTime() / 1000)}`
     const latest = `${Math.floor(toDate.getTime() / 1000)}`
-    console.log("fromDate", fromDate, "toDate", toDate, oldest, latest);
+    console.log("now", new Date(), "fromDate", fromDate, "toDate", toDate, oldest, latest);
     const result: Message[][] = []
     let messagesRes = (await client.conversations.history({ channel: channelId, inclusive: true, oldest, latest, }))
     let messages = messagesRes.messages ?? []
