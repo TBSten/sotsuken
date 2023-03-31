@@ -23,5 +23,7 @@ steps:
   - '--set-secrets=SLACK_CLIENT_ID=SLACK_CLIENT_ID:1'
   - '--set-secrets=SLACK_CLIENT_SECRET=SLACK_CLIENT_SECRET:1'
   - '--allow-unauthenticated'
+  - '--set-env-vars'
+  - 'TZ=Asia/Tokyo'
 images:
 - 'gcr.io/$PROJECT_ID/web-server:$COMMIT_SHA'

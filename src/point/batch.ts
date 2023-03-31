@@ -2,13 +2,16 @@ import { getUserBySlackId } from "@/auth/users";
 import { client } from "@/slack";
 import { joinNotJoinedChannels } from "@/slack/channels";
 import { Message } from "@slack/web-api/dist/response/ConversationsRepliesResponse";
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
+import dayjsTimezone from "dayjs/plugin/timezone";
+import dayjsUtc from "dayjs/plugin/utc";
 import { addPoint } from ".";
 
-// interface Bonus {
-//     type: "reply" | "message" | "reaction"
-//     channelId: string
-//     text?: string
-// }
+dayjs.extend(dayjsUtc)
+dayjs.extend(dayjsTimezone)
+
+const datetimeFormat = "YYYY/MM/DD-HH:mm:ss"
 
 const settings = {
     message: {
@@ -117,21 +120,38 @@ const getBonusTargets = async () => {
     return threads
 }
 
+const bonusTargetPeriod = {
+    now() {
+        return dayjs().tz('Asia/Tokyo')
+    },
+    get end() {
+        return (
+            this.now()
+                .hour(0)
+                .minute(0)
+                .second(0)
+                .millisecond(0)
+        )
+    },
+    get start() {
+        return (
+            this.end
+                .subtract(1, "d")
+        )
+    },
+}
+
 const getMessagesAndReplies = async (channelId: string) => {
-    const fromDate = new Date() // 前日の00:00 0.0
-    fromDate.setDate(fromDate.getDate() - 1)
-    fromDate.setHours(0)
-    fromDate.setMinutes(0)
-    fromDate.setSeconds(0)
-    fromDate.setMilliseconds(0)
-    const toDate = new Date() // 本日の00:00 0.0
-    toDate.setHours(0)
-    toDate.setMinutes(0)
-    toDate.setSeconds(0)
-    toDate.setMilliseconds(0)
-    const oldest = `${Math.floor(fromDate.getTime() / 1000)}`
-    const latest = `${Math.floor(toDate.getTime() / 1000)}`
-    console.log("now", new Date(), "fromDate", fromDate, "toDate", toDate, oldest, latest);
+    const now = dayjs().tz('Asia/Tokyo')
+    const from = bonusTargetPeriod.start
+    const to = bonusTargetPeriod.end
+    const oldest = `${Math.floor((from.unix()))}`
+    const latest = `${Math.floor(to.unix())}`
+    console.log("now", now.format(datetimeFormat))
+    console.log("from", from.format(datetimeFormat))
+    console.log("to", to.format(datetimeFormat))
+    console.log("oldest", oldest, "latest", latest,)
+    console.groupEnd()
     const result: Message[][] = []
     let messagesRes = (await client.conversations.history({ channel: channelId, inclusive: true, oldest, latest, }))
     let messages = messagesRes.messages ?? []
