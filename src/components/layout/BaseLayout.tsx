@@ -19,7 +19,7 @@ const BaseLayout: FC<BaseLayoutProps> = ({
         : { minHeight: "100%" }
     return (
         <Box width="100%" height="100%" {...boxProps} bgcolor={t => t.palette.grey[100]} overflow="auto">
-            <BaseMenu isAdmin={isAdmin} />
+            <BaseMenu />
             <BaseHeader isAdmin={isAdmin} />
             {children}
         </Box>

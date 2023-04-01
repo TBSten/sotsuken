@@ -1,14 +1,14 @@
 import { useResponsive } from "@/styles/useResponsive";
+import { trpc } from "@/trpc";
 import { NavigateNext } from "@mui/icons-material";
 import { Box, Drawer, List, ListItem, ListItemButton } from "@mui/material";
 import { atom, useAtom } from "jotai";
+import { useSession } from "next-auth/react";
 import { FC, ReactNode, useCallback } from "react";
 
 interface BaseMenuProps {
-    isAdmin?: boolean
 }
 const BaseMenu: FC<BaseMenuProps> = ({
-    isAdmin = false,
 }) => {
     const topMenu = useTopMenu()
     const { responsive } = useResponsive()
@@ -27,8 +27,13 @@ export default BaseMenu;
 
 interface MenuListProps {
 }
-const MenuList: FC<MenuListProps> = () => {
+const MenuList: FC<MenuListProps> = ({ }) => {
     const { isPc } = useResponsive()
+    const { data: session } = useSession()
+    const sessionUserId = session?.user.userId
+    const sessionUser = trpc.user.get.useQuery(sessionUserId ?? "", {
+        enabled: !!sessionUserId,
+    })
     return (
         <List sx={{ maxHeight: "80vh" }}>
             <ListItem sx={{ fontSize: "2em" }}>
@@ -68,26 +73,30 @@ const MenuList: FC<MenuListProps> = () => {
                     <NavigateNext />
                 </ListItemButton>
             </ListItem>
-            <ListItem>
-                管理者
-            </ListItem>
-            <MenuButton href="/admin/members">
-                トップ
-            </MenuButton>
-            <MenuButton href="/admin/members">
-                メンバ一覧
-            </MenuButton>
-            <MenuButton href="/admin/skillAssessment/templates">
-                星取表の {isPc && <br />}
-                デフォルトスキル  {isPc && <br />}
-                編集  {isPc && <br />}
-            </MenuButton>
-            <MenuButton href="/admin/point">
-                ポイント一覧
-            </MenuButton>
-            <MenuButton href="/admin/point/new">
-                ポイント管理
-            </MenuButton>
+            {sessionUser.data?.isAdmin &&
+                <>
+                    <ListItem>
+                        管理者
+                    </ListItem>
+                    <MenuButton href="/admin/members">
+                        トップ
+                    </MenuButton>
+                    <MenuButton href="/admin/members">
+                        メンバ一覧
+                    </MenuButton>
+                    <MenuButton href="/admin/skillAssessment/templates">
+                        星取表の {isPc && <br />}
+                        デフォルトスキル  {isPc && <br />}
+                        編集  {isPc && <br />}
+                    </MenuButton>
+                    <MenuButton href="/admin/point">
+                        ポイント一覧
+                    </MenuButton>
+                    <MenuButton href="/admin/point/new">
+                        ポイント管理
+                    </MenuButton>
+                </>
+            }
         </List>
     );
 }
