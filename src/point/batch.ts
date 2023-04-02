@@ -1,6 +1,7 @@
 import { getUserBySlackId } from "@/auth/users";
 import { client } from "@/slack";
 import { joinNotJoinedChannels } from "@/slack/channels";
+import { lines } from "@/util/text";
 import { Message } from "@slack/web-api/dist/response/ConversationsRepliesResponse";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
@@ -244,7 +245,3 @@ const pointDescription = ({
     contents.join("\n\n" + divider + "\n")
 )
 
-const lines = (lines: string[], { indent = "" }: { indent?: string } = {}) =>
-    lines
-        .map(l => indent + l)
-        .join("\n")
