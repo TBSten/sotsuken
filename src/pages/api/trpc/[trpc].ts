@@ -113,12 +113,6 @@ export const appRouter = t.router({
             }),
         list: t.procedure
             .query(async ({ ctx: { session } }) => {
-                if (!(
-                    session?.user.userId &&
-                    await isAdminUser(session?.user.userId)
-                )) {
-                    throw new TRPCError({ code: "FORBIDDEN" })
-                }
                 const users = await getAllUsers()
                 return users
             }),
