@@ -61,3 +61,8 @@ export const isAdminUser = async (user: string | User | undefined | null) => {
     }
     return user.isAdmin
 }
+
+export const isExistsUser = async (userId: string) => {
+    const snap = await users.doc(userId).get()
+    return snap.exists
+}

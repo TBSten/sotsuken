@@ -1,7 +1,8 @@
 import { getAllUsers, getUser, isAdminUser } from "@/auth/users";
 import { getAllNotifications } from "@/notification";
 import { PointQuerySchema, addPoint, deletePoint, getAllPoints, getPoint, getTotalPoint, grantPoint, rejectPoint } from "@/point";
-import { PointSchema } from "@/point/type";
+import { addThank, getThankLimit, getThanks } from "@/point/thanks";
+import { PointSchema, ThankSchema } from "@/point/type";
 import { addSkillAssessment, deleteSkillAssessment, getAllSkillAssessment, updateSkillAssessment } from "@/skillAssessment";
 import { addSkillAssessmentTemplate, getAllSkillAssessmentTemplateMulti, updateSkillAssessmentTemplate } from "@/skillAssessment/template";
 import { SkillAssessment, SkillAssessmentSchema, SkillAssessmentTemplateSchema } from "@/skillAssessment/types";
@@ -146,8 +147,9 @@ export const appRouter = t.router({
                 if (!sessionUserId) throw new TRPCError({ code: "UNAUTHORIZED" })
                 const sessionUser = sessionUserId ? await getUser(sessionUserId) : null
                 if (
-                    !sessionUser?.isAdmin && // 実行者が管理者でもなく
-                    sessionUserId !== inputUserId // 実行者自身の実行でもない
+                    // 管理者でないのに他のユーザに対してポイント付与しようとした
+                    !sessionUser?.isAdmin &&
+                    (inputUserId && inputUserId !== sessionUserId)
                 ) throw new TRPCError({ code: "FORBIDDEN" })
                 if (!userId) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "not implement" })
                 const newPoint = await addPoint(userId, input.point)
@@ -157,7 +159,8 @@ export const appRouter = t.router({
             .input(PointQuerySchema.nullable())
             .query(async ({ input: query, ctx: { session } }) => {
                 if (!query) query = { userId: session?.user.userId }
-                return await getAllPoints(query)
+                const res = await getAllPoints(query)
+                return res
             }),
         getOne: t.procedure
             .input(z.object({
@@ -199,6 +202,30 @@ export const appRouter = t.router({
                 if (!isAdminUser(session?.user.userId)) throw new TRPCError({ code: "UNAUTHORIZED" })
                 await rejectPoint(pointId)
             }),
+        thanks: t.router({
+            add: t.procedure
+                .input(ThankSchema.partial())
+                .mutation(async ({ input, ctx: { session } }) => {
+                    const sessionUserId = session?.user.userId
+                    if (!sessionUserId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                    const balance = await getThankLimit(sessionUserId)
+                    if (balance < (input.point ?? 0)) throw new TRPCError({ code: "FORBIDDEN", message: "上限に達しています。" })
+                    if (sessionUserId === input.targetUserId) throw new TRPCError({ code: "BAD_REQUEST", message: "自分自身には感謝ポイントを贈れません。" })
+                    return await addThank(sessionUserId, input)
+                }),
+            getAll: t.procedure
+                .query(async ({ ctx: { session } }) => {
+                    const sessionUserId = session?.user.userId
+                    if (!sessionUserId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                    return await getThanks(sessionUserId)
+                }),
+            getLimit: t.procedure
+                .query(async ({ ctx: { session } }) => {
+                    const sessionUserId = session?.user.userId
+                    if (!sessionUserId) throw new TRPCError({ code: "UNAUTHORIZED" })
+                    return await getThankLimit(sessionUserId)
+                }),
+        }),
     }),
 })
 export const hoge = "this is very important value"

@@ -24,6 +24,7 @@ export const addPoint = async (userId: string, input: Partial<Point>) => {
         description: "",
         createAt: now,
         updateAt: now,
+        userId,
         ...input,
     }
     await userPoints(userId).doc(pointId).set(newPoint)
@@ -86,7 +87,7 @@ export const getPendingPoints = async (userId: string) => {
 
 export const getTotalPoint = async (userId: string) => {
     const grantedSnap = await userPoints(userId)
-        .where("status", "in", ["granted", "auto", "deducte"])
+        .where("status", "in", ["granted", "auto", "deducte", "thank"])
         .get()
     const allPoints = grantedSnap.docs.map(d => d.data())
     const total = allPoints.reduce((ans, p) => ans + p.point, 0)

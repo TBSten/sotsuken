@@ -2,15 +2,15 @@ import { getUser } from '@/auth/users';
 import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import H1 from '@/components/section/H1';
+import { UserSelect } from '@/components/user/UserSelect';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Point } from '@/point/type';
 import { trpc } from '@/trpc';
 import { useSnackbar } from '@/util/hooks/useSnackbar';
-import { Box, Button, Chip, CircularProgress, ListItemAvatar, ListItemText, MenuItem, Select, Snackbar, Stack, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, Snackbar, Stack, TextField } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
 import { User, getServerSession } from 'next-auth';
-import Image from 'next/image';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 
 const defaultPoint: Partial<Point> = {
@@ -93,55 +93,6 @@ const AdminNewPoint: NextPage<Props> = ({ }) => {
     );
 }
 export default AdminNewPoint;
-
-
-interface UserSelectProps {
-    user: User | null
-    onChange: (userId: User | null) => void
-    label?: string
-}
-const UserSelect: FC<UserSelectProps> = ({ user, onChange, label }) => {
-    const users = trpc.user.list.useQuery()
-    const handleChange = (userId: string) => {
-        if (!users.data) return
-        const user = users.data.filter(u => u.id === userId)[0]
-        onChange(user ?? null)
-    }
-    if (!users.data) return <CircularProgress />
-    return (
-        <Select
-            value={user?.id ?? null}
-            onChange={(e) => handleChange(e.target.value as string)}
-        >
-            {users.data.map(user =>
-                <MenuItem key={user.id} value={user.id}>
-                    <Stack direction="row" alignItems="center">
-                        <ListItemAvatar>
-                            <Image
-                                src={user.image ?? "/favicon.ico"}
-                                alt={user.name ?? "無名"}
-                                width={30}
-                                height={30}
-                            />
-                        </ListItemAvatar>
-                        <ListItemText>
-                            {user.name}
-                        </ListItemText>
-                        {user.isAdmin &&
-                            <Chip
-                                variant='outlined'
-                                color='primary'
-                                label="管理者"
-                                size='small'
-                                sx={{ mx: 1 }}
-                            />
-                        }
-                    </Stack>
-                </MenuItem>
-            )}
-        </Select>
-    );
-}
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions)

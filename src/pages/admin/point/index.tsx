@@ -4,6 +4,7 @@ import BaseLayout from '@/components/layout/BaseLayout';
 import LayoutContent from '@/components/layout/LayoutContent';
 import StatusView from '@/components/point/StatusView';
 import H1 from '@/components/section/H1';
+import UserInfoOf from '@/components/user/UserInfoOf';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import type { PointQuery } from '@/point';
 import { trpc } from '@/trpc';
@@ -65,6 +66,7 @@ const AdminPointListPage: NextPage<Props> = ({ }) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>日付</TableCell>
+                                <TableCell>ユーザ</TableCell>
                                 <TableCell>ポイント</TableCell>
                                 <TableCell>ステータス</TableCell>
                                 <TableCell></TableCell>
@@ -79,6 +81,12 @@ const AdminPointListPage: NextPage<Props> = ({ }) => {
                                         />
                                     </TableCell>
                                     <TableCell>
+                                        <UserInfoOf
+                                            userId={p.userId}
+                                            render={u => u.name}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
                                         {p.point}
                                     </TableCell>
                                     <TableCell>
@@ -88,13 +96,13 @@ const AdminPointListPage: NextPage<Props> = ({ }) => {
                                     </TableCell>
                                     <TableCell>
                                         <IconButton
-                                            disabled={p.status === "auto" || p.status === "granted" || p.status === "deducte"}
+                                            disabled={p.status !== "rejected" && p.status !== "pending"}
                                             onClick={() => handleGrant(p.pointId)}
                                         >
                                             <ThumbUp />
                                         </IconButton>
                                         <IconButton
-                                            disabled={p.status === "auto" || p.status === "rejected" || p.status === "deducte"}
+                                            disabled={p.status !== "granted" && p.status !== "pending"}
                                             onClick={() => handleReject(p.pointId)}
                                         >
                                             <ThumbDown />

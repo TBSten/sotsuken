@@ -26,7 +26,7 @@ interface Props {
 }
 const PointListPage: NextPage<Props> = ({ }) => {
     const { data: session } = useSession()
-    const points = trpc.point.getAll.useQuery({}, { staleTime })
+    const points = trpc.point.getAll.useQuery(null, { staleTime })
 
     const totalPoint = trpc.point.total.useQuery({ userId: session?.user.userId ?? "" }, { enabled: !!session, staleTime })
 

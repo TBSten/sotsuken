@@ -129,6 +129,10 @@ const PointMenus: FC<PointMenusProps> = () => {
               ポイント<br />
               履歴
             </SquareButton>
+            <SquareButton href="/point/thanks">
+              感謝<br />
+              ポイント
+            </SquareButton>
           </Stack>
         </SectionContent>
       </Section>
