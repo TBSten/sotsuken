@@ -1,4 +1,4 @@
-import { getBonusTargets } from "@/point/batch";
+import { getBonusTargets } from "@/point/batch/totalling";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {

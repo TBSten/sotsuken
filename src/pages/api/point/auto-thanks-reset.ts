@@ -1,4 +1,4 @@
-import { totalPoints } from "@/point/batch/totalling";
+import { resetUsersThanksLimit } from "@/point/batch/resetUsersThanksLimit";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
@@ -7,7 +7,7 @@ const handler: NextApiHandler = async (req, res) => {
 
         return res.status(401).json({ msg: "invalid request body" })
     }
-    await totalPoints()
+    await resetUsersThanksLimit()
     res.json({ msg: "ok" })
 }
 

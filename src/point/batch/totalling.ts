@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import dayjsTimezone from "dayjs/plugin/timezone";
 import dayjsUtc from "dayjs/plugin/utc";
-import { addPoint } from ".";
+import { addPoint } from "..";
 
 dayjs.extend(dayjsUtc)
 dayjs.extend(dayjsTimezone)

@@ -52,5 +52,5 @@ export const getThankLimit = async (userId: string) => {
 }
 
 export const consumeThankLimit = async (userId: string, thankPoint: number) => {
-    users.doc(userId).set({ thankLimit: FieldValue.increment(-thankPoint) }, { merge: true })
+    await users.doc(userId).set({ thankLimit: FieldValue.increment(-thankPoint) }, { merge: true })
 }
