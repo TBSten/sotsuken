@@ -10,6 +10,7 @@ export const UserSchema = z.object({
     lastReadAt: z.number(),
     slackId: z.string(),
     isAdmin: z.boolean(),
+    thankLimit: z.number(),
 })
 
 
@@ -24,6 +25,7 @@ declare module "next-auth" {
         lastReadAt: number
         slackId: string
         isAdmin: boolean
+        thankLimit: number
     }
 }
 

@@ -40,6 +40,7 @@ const ThanksPointPage: NextPage<Props> = ({ }) => {
         if (user?.id === session?.user.userId) return snackbar.show("自分自身にポイントを送ることはできません")
         if (editingThank.point && editingThank.point <= 0) return snackbar.show("送るポイントは1以上の必要があります")
         if (editingThank.reason && editingThank.reason.length < 10) return snackbar.show("理由・メッセージを10文字以上入力してください")
+        if (thanksLimit.data && thanksLimit.data < editingThank.point!) return snackbar.show("送れる感謝ポイントの上限に達しています")
         confirmDialog.show()
     }
     const handleAdd = async () => {
@@ -203,16 +204,6 @@ const ThanksPointPage: NextPage<Props> = ({ }) => {
                                         </TableCell>
                                     </TableRow>
                                 )}
-                                {thanks.data
-                                    ? thanks.data.length === 0 &&
-                                    <TableRow>
-                                        <TableCell colSpan={4}>
-                                            <Alert severity='warning'>
-                                                感謝ポイントを送信したことがありません
-                                            </Alert>
-                                        </TableCell>
-                                    </TableRow>
-                                    : <CircularProgress />}
                             </TableBody>
                         </Table>
                     </TableContainer>

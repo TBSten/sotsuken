@@ -1,5 +1,6 @@
 import { getUser, isExistsUser, users } from "@/auth/users";
 import { lines } from "@/util/text";
+import { FieldValue } from "@google-cloud/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { addPoint } from ".";
 import { thankConverter } from "./converter";
@@ -18,6 +19,8 @@ export const addThank = async (thankByUserId: string, input: Partial<Thank>) => 
         createAt: now,
         updateAt: now,
     }
+    const usableThankLimit = await getThankLimit(thankByUserId)
+    if (usableThankLimit < newThank.point) throw new Error(`can not send thank by thank limit . you can use ${usableThankLimit} point , but you tried to use ${newThank.point}`)
     const thankByUser = await getUser(thankByUserId)
     if (!thankByUser) throw new Error(`invalid user : not exists id=${thankByUser}`)
     // TODO: targetUserの存在チェック
@@ -32,6 +35,7 @@ export const addThank = async (thankByUserId: string, input: Partial<Thank>) => 
             newThank.reason,
         ]),
     })
+    await consumeThankLimit(thankByUserId, newThank.point)
     return newThank
 }
 
@@ -42,5 +46,11 @@ export const getThanks = async (userId: string) => {
 }
 
 export const getThankLimit = async (userId: string) => {
-    return 100
+    const user = await getUser(userId)
+    if (!user) throw new Error(`invalid user : not exists userId=${userId}`)
+    return user.thankLimit
+}
+
+export const consumeThankLimit = async (userId: string, thankPoint: number) => {
+    users.doc(userId).set({ thankLimit: FieldValue.increment(-thankPoint) }, { merge: true })
 }
